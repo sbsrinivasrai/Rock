@@ -47,8 +47,13 @@ jobs:
       - name: Install front-end packages
         run: npm ci
 
-      - name: Restore NuGet packages
+      - name: Restore NuGet packages (projects)
         run: nuget restore Rock.sln
+
+      # RockWeb is an ASP.NET Web Site project: it gets its DLLs from
+      # RockWeb\packages.config via .refresh files that point at .\packages\
+      - name: Restore NuGet packages (RockWeb web site)
+        run: nuget restore RockWeb\packages.config -PackagesDirectory packages
 
       - name: Build solution
         run: msbuild Rock.sln /p:Configuration=Release /m /restore /verbosity:minimal
